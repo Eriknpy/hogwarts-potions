@@ -1,4 +1,5 @@
-﻿using HogwartsPotions.Data.Services;
+﻿using System;
+using HogwartsPotions.Data.Services;
 using HogwartsPotions.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HogwartsPotions.Controllers
 {
-    [ApiController, Route("/potion")]
+    [ApiController, Route("/potions")]
     public class PotionController : Controller
     {
         private readonly IPotionService _service;
@@ -15,10 +16,15 @@ namespace HogwartsPotions.Controllers
             _service = context;
         }
 
-        [HttpGet("all")]
-        public async Task<List<Potion>> GetAllPotions()
+        [HttpGet]
+        public async Task<ActionResult<List<Potion>>> GetAllPotions()
         {
-            return await _service.GetAllPotions();
+            var potions = await _service.GetAllPotions();
+            if (potions is null)
+            {
+                return NotFound();
+            }
+            return Ok(potions);
         }
     }
 }

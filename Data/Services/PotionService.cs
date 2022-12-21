@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HogwartsPotions.Models.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,9 @@ namespace HogwartsPotions.Data.Services
         public async Task<List<Potion>> GetAllPotions()
         {
             return await _context.Potions
+                .Include(p=>p.Brewer)
                 .Include(p=>p.Ingredients)
+                .Include(p=>p.Recipe)
                 .ToListAsync();
         }
     }
