@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using HogwartsPotions.Models.Enums;
+using System.Text.Json.Serialization;
+using HogwartsPotions.Data.Enums;
 
 namespace HogwartsPotions.Models.Entities
 {
@@ -7,11 +8,9 @@ namespace HogwartsPotions.Models.Entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { get; set; }
-
         public string Name { get; set; }
         public HouseType HouseType { get; set; }
         public PetType PetType { get; set; }
-        
         public Room Room { get; set; }
     }
 }
