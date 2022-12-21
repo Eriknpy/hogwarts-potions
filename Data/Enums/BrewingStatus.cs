@@ -1,4 +1,4 @@
-﻿namespace HogwartsPotions.Models.Enums
+﻿namespace HogwartsPotions.Data.Enums
 {
     public enum BrewingStatus : byte
     {
