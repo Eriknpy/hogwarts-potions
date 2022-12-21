@@ -59,6 +59,7 @@ namespace HogwartsPotions
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+            HogwartsInitializer.Seed(app);
         }
     }
 }
