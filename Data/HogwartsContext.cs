@@ -15,8 +15,11 @@ namespace HogwartsPotions.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
-
+            modelBuilder.Entity<Room>().ToTable("Room");
+            modelBuilder.Entity<Student>().ToTable("Student");
+            modelBuilder.Entity<Ingredient>().ToTable("Ingredient");
+            modelBuilder.Entity<Recipe>().ToTable("Recipe");
+            modelBuilder.Entity<Potion>().ToTable("Potion");
         }
 
         public DbSet<Room> Rooms { get; set; }
