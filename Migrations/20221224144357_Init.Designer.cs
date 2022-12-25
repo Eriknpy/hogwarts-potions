@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HogwartsPotions.Migrations
 {
     [DbContext(typeof(HogwartsContext))]
-    [Migration("20221221120952_Init")]
+    [Migration("20221224144357_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,39 +26,29 @@ namespace HogwartsPotions.Migrations
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Ingredient", b =>
                 {
-                    b.Property<long>("ID")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("PotionID")
-                        .HasColumnType("bigint");
+                    b.HasKey("Id");
 
-                    b.Property<long?>("RecipeID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("PotionID");
-
-                    b.HasIndex("RecipeID");
-
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredient", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Potion", b =>
                 {
-                    b.Property<long>("ID")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<long?>("BrewerID")
+                    b.Property<long?>("BrewerId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
@@ -70,13 +60,13 @@ namespace HogwartsPotions.Migrations
                     b.Property<byte>("Status")
                         .HasColumnType("tinyint");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("BrewerID");
+                    b.HasIndex("BrewerId");
 
                     b.HasIndex("RecipeID");
 
-                    b.ToTable("Potions");
+                    b.ToTable("Potion", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Recipe", b =>
@@ -87,7 +77,7 @@ namespace HogwartsPotions.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"), 1L, 1);
 
-                    b.Property<long?>("AuthorID")
+                    b.Property<long?>("AuthorId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
@@ -95,34 +85,34 @@ namespace HogwartsPotions.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("AuthorID");
+                    b.HasIndex("AuthorId");
 
-                    b.ToTable("Recipes");
+                    b.ToTable("Recipe", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Room", b =>
                 {
-                    b.Property<long>("ID")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Room", (string)null);
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Student", b =>
                 {
-                    b.Property<long>("ID")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<byte>("HouseType")
                         .HasColumnType("tinyint");
@@ -133,32 +123,51 @@ namespace HogwartsPotions.Migrations
                     b.Property<byte>("PetType")
                         .HasColumnType("tinyint");
 
-                    b.Property<long?>("RoomID")
+                    b.Property<long?>("RoomId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("RoomID");
+                    b.HasIndex("RoomId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Student", (string)null);
                 });
 
-            modelBuilder.Entity("HogwartsPotions.Models.Entities.Ingredient", b =>
+            modelBuilder.Entity("IngredientPotion", b =>
                 {
-                    b.HasOne("HogwartsPotions.Models.Entities.Potion", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("PotionID");
+                    b.Property<long>("IngredientsId")
+                        .HasColumnType("bigint");
 
-                    b.HasOne("HogwartsPotions.Models.Entities.Recipe", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeID");
+                    b.Property<long>("PotionsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("IngredientsId", "PotionsId");
+
+                    b.HasIndex("PotionsId");
+
+                    b.ToTable("IngredientPotion");
+                });
+
+            modelBuilder.Entity("IngredientRecipe", b =>
+                {
+                    b.Property<long>("IngredientsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RecipesID")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("IngredientsId", "RecipesID");
+
+                    b.HasIndex("RecipesID");
+
+                    b.ToTable("IngredientRecipe");
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Potion", b =>
                 {
                     b.HasOne("HogwartsPotions.Models.Entities.Student", "Brewer")
                         .WithMany()
-                        .HasForeignKey("BrewerID");
+                        .HasForeignKey("BrewerId");
 
                     b.HasOne("HogwartsPotions.Models.Entities.Recipe", "Recipe")
                         .WithMany()
@@ -173,7 +182,7 @@ namespace HogwartsPotions.Migrations
                 {
                     b.HasOne("HogwartsPotions.Models.Entities.Student", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorID");
+                        .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });
@@ -182,19 +191,39 @@ namespace HogwartsPotions.Migrations
                 {
                     b.HasOne("HogwartsPotions.Models.Entities.Room", "Room")
                         .WithMany("Residents")
-                        .HasForeignKey("RoomID");
+                        .HasForeignKey("RoomId");
 
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("HogwartsPotions.Models.Entities.Potion", b =>
+            modelBuilder.Entity("IngredientPotion", b =>
                 {
-                    b.Navigation("Ingredients");
+                    b.HasOne("HogwartsPotions.Models.Entities.Ingredient", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HogwartsPotions.Models.Entities.Potion", null)
+                        .WithMany()
+                        .HasForeignKey("PotionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("HogwartsPotions.Models.Entities.Recipe", b =>
+            modelBuilder.Entity("IngredientRecipe", b =>
                 {
-                    b.Navigation("Ingredients");
+                    b.HasOne("HogwartsPotions.Models.Entities.Ingredient", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HogwartsPotions.Models.Entities.Recipe", null)
+                        .WithMany()
+                        .HasForeignKey("RecipesID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HogwartsPotions.Models.Entities.Room", b =>
