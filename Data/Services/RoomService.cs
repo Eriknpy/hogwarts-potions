@@ -32,7 +32,7 @@ namespace HogwartsPotions.Data.Services
 
         public async Task<Room> GetRoomById(long id)
         {
-            return await _context.Rooms.FirstOrDefaultAsync(room => room.ID == id);
+            return await _context.Rooms.FirstOrDefaultAsync(room => room.Id == id);
         }
 
         public async Task UpdateRoomById(long id, Room updatedRoom)

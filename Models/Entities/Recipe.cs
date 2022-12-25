@@ -10,9 +10,5 @@ namespace HogwartsPotions.Models.Entities
         public string Name { get; set; }
         public Student Author { get; set; }
         public HashSet<Ingredient> Ingredients { get; set; }
-        public Recipe()
-        {
-            Ingredients = new HashSet<Ingredient>();
-        }
     }
 }
