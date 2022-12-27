@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HogwartsPotions.Data.Enums;
@@ -45,11 +44,6 @@ namespace HogwartsPotions.Data.Services
 
         public async Task DeleteRoomById(long id)
         {
-            //var entity = await GetRoomById(id);
-            //EntityEntry entityEntry = _context.Entry(entity);
-            //entityEntry.State = EntityState.Deleted;
-            //await _context.SaveChangesAsync();
-
             Room room = _context.Rooms.Find(id);
             _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
@@ -57,29 +51,6 @@ namespace HogwartsPotions.Data.Services
 
         public async Task<List<Room>> GetRoomsForRatOwners()
         {
-            //List<Room> rooms = new List<Room>();
-            //var dbRooms = await _context.Rooms
-            //    .Include(r => r.Residents)
-            //    .ToListAsync();
-            //foreach (var room in dbRooms)
-            //{
-            //    int bannedPetCounter = 0;
-            //    foreach (var student in room.Residents)
-            //    {
-
-            //        if (student.PetType == PetType.Owl || student.PetType == PetType.Cat)
-            //        {
-            //            bannedPetCounter += 1;
-            //        }
-
-            //    }
-
-            //    if (bannedPetCounter == 0)
-            //    {
-            //        rooms.Add(room);
-            //    }
-            //}
-            //return rooms;
             return await _context.Rooms
                 .Include(r => r.Residents)
                 .Where(room => !room.Residents
