@@ -37,7 +37,7 @@ namespace HogwartsPotions.Data.Services
                 .ToListAsync();
         }
 
-        public async Task AddPotion(Potion potion)
+        public async Task<Potion> AddPotion(Potion potion)
         {
             Student student = await GetStudent(potion.Brewer.Id);
             Potion newPotion = new Potion();
@@ -59,6 +59,7 @@ namespace HogwartsPotions.Data.Services
 
                     await _context.Potions.AddAsync(newPotion);
                     await _context.SaveChangesAsync();
+                    return newPotion;
                 }
                 else
                 {
@@ -89,12 +90,10 @@ namespace HogwartsPotions.Data.Services
                     newPotion.Name = newPotion.Recipe.Name;
                     await _context.Potions.AddAsync(newPotion);
                     await _context.SaveChangesAsync();
+                    return newPotion;
                 }
             }
-            else
-            {
-                throw new Exception("Only Discovery or Replica potions allowed.Therefore, If you wish to brew a new potion with less than 5 ingredients,please visit-> ");
-            }
+            return null;
         }
 
         public async Task<Student> GetStudent(long studentId)
@@ -117,27 +116,57 @@ namespace HogwartsPotions.Data.Services
         public async Task<Potion> GetPotionById(long potionId)
         {
             return await _context.Potions.Where(potion => potion.Id == potionId)
+                .Include(p=>p.Brewer)
                 .Include(p => p.Ingredients)
+                .Include(p=>p.Recipe)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Potion> AddNewIngredientToPotion(Ingredient ingredient, long potionId)
+        public async Task<Potion> AddNewIngredientToPotion(Ingredient ingredient, Potion potion)
         {
-            var updatePotion = await GetPotionById(potionId);
-
-            foreach (Ingredient localIngredient in updatePotion.Ingredients)
+            if (isIngredientInDatabase(ingredient))
             {
-                if (ingredient.Name == localIngredient.Name)
+                if (!IsIngredientInPotion(potion, ingredient))
                 {
-                    return updatePotion;
+                    var existingIngredient = await GetIngredientByName(ingredient.Name);
+                    await UpdatePotionIngredients(potion, existingIngredient);
+                    if (IsPotionIngredientsFull(potion))
+                    {
+                        await ChangePotionStatus(potion);
+                    }
+                    return potion;
                 }
             }
+            await AddIngredient(ingredient);
+            var newIngredient = await GetIngredientByName(ingredient.Name);
+            await UpdatePotionIngredients(potion, newIngredient);
+            if (IsPotionIngredientsFull(potion))
+            {
+                await ChangePotionStatus(potion);
+            }
+            return potion;
+        }
 
-            var existingIngredient = await GetIngredientByName(ingredient.Name);
-            updatePotion.Ingredients.Add(existingIngredient);
-
+        public async Task UpdatePotionIngredients(Potion potion,Ingredient ingredient)
+        {
+            potion.Ingredients.Add(ingredient);
             await _context.SaveChangesAsync();
-            return updatePotion;
+        }
+
+        public bool IsIngredientInPotion(Potion updatePotion, Ingredient ingredient)
+        {
+            return updatePotion.Ingredients.Any(potionIngredient => potionIngredient.Name == ingredient.Name);
+        }
+
+        public bool IsPotionIngredientsFull(Potion potion)
+        {
+      
+            return potion.Ingredients.Count >= MaxIngredientsForPotions;
+        }
+
+        private bool isIngredientInDatabase(Ingredient ingredient)
+        {
+            return _context.Ingredients.Any(dbIngredient => dbIngredient.Name == ingredient.Name);
         }
 
         public async Task<List<Ingredient>> GetAllIngredients()
@@ -150,7 +179,7 @@ namespace HogwartsPotions.Data.Services
             return await _context.Ingredients.FirstOrDefaultAsync(i => i.Name == name);
         }
 
-        public async Task ChangePotionStatus(Potion potion)
+        public async Task<Potion> ChangePotionStatus(Potion potion)
         {
             var recipes = await GetAllRecipes();
 
@@ -160,24 +189,39 @@ namespace HogwartsPotions.Data.Services
                 {
                     potion.Status = BrewingStatus.Replica;
                     potion.Recipe = recipe;
+                    potion.Name = $"{potion.Brewer.Name}'s replica #{GetReplicaCountByPotionBrewer(potion)}";
                     await _context.SaveChangesAsync();
+                    return potion;
                 }
             }
             potion.Status = BrewingStatus.Discovery;
-
-            int studentRecipies = _context.Recipes.Count(r => r.Author.Id == potion.Brewer.Id) + 1;
-
             var newRecipe = new Recipe()
             {
-                Author = potion.Brewer,
+                Name = $"{potion.Brewer.Name}'s discovery #{GetDiscoveryCountByPotionBrewer(potion)}",
                 Ingredients = potion.Ingredients,
-                Name = $"{potion.Brewer.Name}'s discovery #{studentRecipies}"
+                Author = potion.Brewer
             };
             await _context.Recipes.AddAsync(newRecipe);
             potion.Recipe = newRecipe;
+            potion.Name = potion.Recipe.Name;
             await _context.SaveChangesAsync();
+            return potion;
         }
 
+        public int GetReplicaCountByPotionBrewer(Potion potion)
+        {
+            int baseIndex = 1;
+            return _context.Potions.Count(p =>
+                p.Brewer == potion.Brewer &&
+                p.Status == BrewingStatus.Replica) + baseIndex;
+        }
+
+        public int GetDiscoveryCountByPotionBrewer(Potion potion)
+        {
+            int baseIndex = 1;
+            return  _context.Potions.Count(p =>
+                p.Status == BrewingStatus.Discovery && p.Brewer == potion.Brewer) + baseIndex;
+        }
         public async Task<List<Recipe>> GetAllRecipes()
         {
             return await _context.Recipes
@@ -217,27 +261,6 @@ namespace HogwartsPotions.Data.Services
 
         private bool IsIngredientsMatch(HashSet<Ingredient> newPotionIngredients)
         {
-            //List<string> PotionIngredients = new List<string>();
-            //foreach (var ingredient in newPotionIngredients)
-            //{
-            //    PotionIngredients.Add(ingredient.Name);
-            //}
-
-            //var Recipes = _context.Recipes;
-            //foreach (var recipe in Recipes)
-            //{
-            //    List<string> RecipeIngredients = new List<string>();
-            //    foreach (var ingredient in recipe.Ingredients) // Object reference null
-            //    {
-            //        RecipeIngredients.Add(ingredient.Name);
-            //    }
-            //    bool isEqual = !RecipeIngredients.Except(PotionIngredients).Any();
-            //    if (isEqual)
-            //    {
-            //        return true;
-            //    }
-            //}
-            //return false;
             return _context.Recipes
                 .Include(recipe => recipe.Ingredients)
                 .AsEnumerable()
