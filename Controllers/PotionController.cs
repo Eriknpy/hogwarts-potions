@@ -98,16 +98,6 @@ namespace HogwartsPotions.Controllers
         public async Task<ActionResult> AddNewIngredientToPotion(long potionId, [FromBody] Ingredient ingredient)
         {
             Potion potion = await _service.GetPotionById(potionId);
-            if (potion is null)
-            {
-                return NotFound($"Potion with ID of {potionId} doesn't exist!");
-            }
-
-            if (potion.Ingredients.Count >= _maxIngredientsForPotions)
-            {
-                return NotFound($"Potion with ID of {potionId} has too many ingredients.");
-            }
-
             List<Ingredient> ingredients = await _service.GetAllIngredients();
 
             foreach (Ingredient localIngredient in ingredients)
@@ -115,23 +105,11 @@ namespace HogwartsPotions.Controllers
                 if (localIngredient.Name == ingredient.Name)
                 {
                     await _service.AddNewIngredientToPotion(ingredient, potionId);
-
-                    if (potion.Ingredients.Count >= _maxIngredientsForPotions)
-                    {
-                        await _service.ChangePotionStatus(potion);
-                    }
-
                     return Ok(potion);
                 }
             }
             await _service.AddIngredient(ingredient);
             await _service.AddNewIngredientToPotion(ingredient,potionId);
-
-            if (potion.Ingredients.Count >= 5)
-            {
-                await _service.ChangePotionStatus(potion);
-            }
-
             return Ok(potion);
         }
 

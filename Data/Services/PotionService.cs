@@ -124,21 +124,20 @@ namespace HogwartsPotions.Data.Services
         public async Task<Potion> AddNewIngredientToPotion(Ingredient ingredient, long potionId)
         {
             var updatePotion = await GetPotionById(potionId);
-            if (updatePotion != null && updatePotion.Ingredients.Count <= MaxIngredientsForPotions)
-            {
-                foreach (Ingredient localIngredient in updatePotion.Ingredients)
-                {
-                    if (ingredient.Name == localIngredient.Name)
-                    {
-                        return updatePotion;
-                    }
-                }
-                updatePotion.Ingredients.Add(ingredient);
 
-                await _context.SaveChangesAsync();
-                return updatePotion;
+            foreach (Ingredient localIngredient in updatePotion.Ingredients)
+            {
+                if (ingredient.Name == localIngredient.Name)
+                {
+                    return updatePotion;
+                }
             }
-            return null;
+
+            var existingIngredient = await GetIngredientByName(ingredient.Name);
+            updatePotion.Ingredients.Add(existingIngredient);
+
+            await _context.SaveChangesAsync();
+            return updatePotion;
         }
 
         public async Task<List<Ingredient>> GetAllIngredients()
@@ -170,8 +169,8 @@ namespace HogwartsPotions.Data.Services
 
             var newRecipe = new Recipe()
             {
-                Author = potion.Brewer, 
-                Ingredients = potion.Ingredients, 
+                Author = potion.Brewer,
+                Ingredients = potion.Ingredients,
                 Name = $"{potion.Brewer.Name}'s discovery #{studentRecipies}"
             };
             await _context.Recipes.AddAsync(newRecipe);
