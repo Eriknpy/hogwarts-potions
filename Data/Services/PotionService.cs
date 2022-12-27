@@ -242,7 +242,7 @@ namespace HogwartsPotions.Data.Services
 
             return await _context.Recipes
                 .Include(r => r.Ingredients)
-                .Where(r => r.Ingredients.Any(i => potion.Ingredients.Contains(i))).AsNoTracking().ToListAsync();
+                .Where(r => r.Ingredients.Any(ingredient => potion.Ingredients.Contains(ingredient))).AsNoTracking().ToListAsync();
         }
 
 
