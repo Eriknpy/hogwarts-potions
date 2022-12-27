@@ -12,12 +12,10 @@ namespace HogwartsPotions.Controllers
     public class PotionController : Controller
     {
         private readonly IPotionService _service;
-        private readonly int _maxIngredientsForPotions;
 
         public PotionController(IPotionService context)
         {
             _service = context;
-            _maxIngredientsForPotions = 5;
         }
 
         [HttpGet]
@@ -41,8 +39,14 @@ namespace HogwartsPotions.Controllers
                 return NotFound($"Student with ID of {potion.Brewer.Id} doesn't exist!");
             }
 
-            await _service.AddPotion(potion);
-            return Created("New Potion Added", potion);
+            var addPotion = await _service.AddPotion(potion);
+            if (addPotion is null)
+            {
+                return NotFound($@"At this endpoint only Discovery or Replica potion can be added. Your potion has {potion.Ingredients.Count} ingredients. It must be 5 !
+If you wish to brew a new potion with less than 5 ingredients, please visit-> potions/brew/studentId to brew an empty potion.
+Then you can add Ingredients, please visit -> /potions/potionId/add");
+            }
+            return Ok(potion);
         }
 
         [HttpGet("{studentId:long}")]
@@ -98,18 +102,21 @@ namespace HogwartsPotions.Controllers
         public async Task<ActionResult> AddNewIngredientToPotion(long potionId, [FromBody] Ingredient ingredient)
         {
             Potion potion = await _service.GetPotionById(potionId);
-            List<Ingredient> ingredients = await _service.GetAllIngredients();
 
-            foreach (Ingredient localIngredient in ingredients)
+            if (potion is null)
             {
-                if (localIngredient.Name == ingredient.Name)
-                {
-                    await _service.AddNewIngredientToPotion(ingredient, potionId);
-                    return Ok(potion);
-                }
+                return NotFound($"Potion with ID of {potionId} doesn't exist!");
             }
-            await _service.AddIngredient(ingredient);
-            await _service.AddNewIngredientToPotion(ingredient,potionId);
+
+            if (_service.IsIngredientInPotion(potion, ingredient))
+            {
+                return NotFound($"{ingredient.Name} already exists in the potion of ID {potion.Id}");
+            }
+            if (_service.IsPotionIngredientsFull(potion))
+            {
+                return StatusCode(500, $"Potion with ID of {potion.Id} has too many ingredient.");
+            }
+            await _service.AddNewIngredientToPotion(ingredient, potion);
             return Ok(potion);
         }
 
