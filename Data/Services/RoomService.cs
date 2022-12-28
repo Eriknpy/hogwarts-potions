@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using HogwartsPotions.Data.Enums;
+using HogwartsPotions.Data.Interfaces;
 using HogwartsPotions.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

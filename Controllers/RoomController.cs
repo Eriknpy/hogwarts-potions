@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using HogwartsPotions.Data;
-using HogwartsPotions.Data.Services;
+using HogwartsPotions.Data.Interfaces;
 using HogwartsPotions.Models;
 using HogwartsPotions.Models.Entities;
 using Microsoft.AspNetCore.Mvc;

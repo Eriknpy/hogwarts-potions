@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using HogwartsPotions.Models.Entities;
 
-namespace HogwartsPotions.Data.Services
+namespace HogwartsPotions.Data.Interfaces
 {
     public interface IRoomService
     {

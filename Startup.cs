@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using HogwartsPotions.Data;
+using HogwartsPotions.Data.Interfaces;
 using HogwartsPotions.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

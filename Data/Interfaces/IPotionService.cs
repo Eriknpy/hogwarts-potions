@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace HogwartsPotions.Data.Services
+namespace HogwartsPotions.Data.Interfaces
 {
     public interface IPotionService
     {
@@ -12,7 +12,7 @@ namespace HogwartsPotions.Data.Services
         Task<Student> GetStudent(long studentId);
         Task<Potion> AddEmptyPotion(Student student);
         Task<Potion> GetPotionById(long potionId);
-        Task<Potion> AddNewIngredientToPotion(Ingredient ingredient,Potion potion);
+        Task<Potion> AddNewIngredientToPotion(Ingredient ingredient, Potion potion);
         Task<List<Ingredient>> GetAllIngredients();
         Task<Ingredient> GetIngredientByName(string name);
         Task<Potion> ChangePotionStatus(Potion potion);

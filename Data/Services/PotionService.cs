@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HogwartsPotions.Data.Enums;
+using HogwartsPotions.Data.Interfaces;
 using HogwartsPotions.Models.Entities;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
