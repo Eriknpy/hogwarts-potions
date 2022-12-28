@@ -1,10 +1,10 @@
 ﻿using System;
-using HogwartsPotions.Data.Services;
 using HogwartsPotions.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using HogwartsPotions.Data.Interfaces;
 
 namespace HogwartsPotions.Controllers
 {
@@ -43,7 +43,7 @@ namespace HogwartsPotions.Controllers
             if (addPotion is null)
             {
                 return NotFound($@"At this endpoint only Discovery or Replica potion can be added. Your potion has {potion.Ingredients.Count} ingredients. It must be 5 !
-If you wish to brew a new potion with less than 5 ingredients, please visit-> potions/brew/studentId to brew an empty potion.
+If you wish to brew a new potion, please visit-> potions/brew/studentId to brew an empty potion.
 Then you can add Ingredients, please visit -> /potions/potionId/add");
             }
             return Ok(potion);
