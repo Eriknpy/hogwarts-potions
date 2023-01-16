@@ -20,47 +20,6 @@ namespace HogwartsPotions.Models.Entities
         {
             Ingredients = new HashSet<Ingredient>();
             Status = BrewingStatus.Brew;
-            //Name = $"{Brewer.Name}'s Potions";
-            //SetBrewingStatus();
         }
-
-        //public void SetBrewingStatus()
-        //{
-        //    if (Ingredients.Count < 5)
-        //    {
-        //        Status = BrewingStatus.Brew;
-        //    }
-
-        //    if (CompareIngredientLists())
-        //    {
-        //        Status = BrewingStatus.Replica;
-        //    }
-        //    Status = BrewingStatus.Discovery;
-        //}
-
-        //public bool CompareIngredientLists()
-        //{
-        //    List<string> PotionIngredients = new List<string>();
-
-        //    foreach (var ingredient in Ingredients)
-        //    {
-        //        PotionIngredients.Add(ingredient.Name);
-        //    }
-
-        //    List<string> RecipeIngredients = new List<string>();
-
-        //    foreach (var ingredient in Recipe.Ingredients)
-        //    {
-        //        RecipeIngredients.Add(ingredient.Name);
-        //    }
-
-        //    bool isEqual = !RecipeIngredients.Except(PotionIngredients).Any();
-
-        //    if (PotionIngredients.Count != RecipeIngredients.Count)
-        //    {
-        //        return false;
-        //    }
-        //    return isEqual;
-        //}
     }
 }

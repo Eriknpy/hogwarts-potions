@@ -10,5 +10,4 @@ public class Ingredient
     public string Name { get; set; }
     public HashSet<Potion> Potions { get; set; }
     public HashSet<Recipe> Recipes { get; set; }
-
 }

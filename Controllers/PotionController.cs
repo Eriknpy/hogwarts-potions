@@ -1,9 +1,7 @@
-﻿using System;
-using HogwartsPotions.Models.Entities;
+﻿using HogwartsPotions.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using HogwartsPotions.Data.Interfaces;
 
 namespace HogwartsPotions.Controllers
@@ -36,7 +34,7 @@ namespace HogwartsPotions.Controllers
             Student student = await _service.GetStudent(potion.Brewer.Id);
             if (student is null)
             {
-                return NotFound($"Student with ID of {potion.Brewer.Id} doesn't exist!");
+                return NotFound($"Student with Id of {potion.Brewer.Id} doesn't exist!");
             }
 
             var addPotion = await _service.AddPotion(potion);
@@ -60,7 +58,7 @@ Then you can add Ingredients, please visit -> /potions/potionId/add");
 
             if (studentPotions.Count == 0)
             {
-                return NotFound($"Student of ID {studentId} doesn't have any potions yet!");
+                return NotFound($"Student of Id {studentId} doesn't have any potions yet!");
             }
 
             return Ok(studentPotions);
@@ -72,7 +70,7 @@ Then you can add Ingredients, please visit -> /potions/potionId/add");
             var student = await _service.GetStudent(studentId);
             if (student is null)
             {
-                return NotFound($"Student with ID of {studentId} doesn't exist!");
+                return NotFound($"Student with Id of {studentId} doesn't exist!");
             }
 
             return Ok(student);
@@ -84,7 +82,7 @@ Then you can add Ingredients, please visit -> /potions/potionId/add");
             Student student = await _service.GetStudent(studentId);
             if (student is null)
             {
-                return NotFound($"Student with ID of {studentId} doesn't exist!");
+                return NotFound($"Student with Id of {studentId} doesn't exist!");
             }
 
             Potion potion = await _service.AddEmptyPotion(student);
@@ -105,16 +103,16 @@ Then you can add Ingredients, please visit -> /potions/potionId/add");
 
             if (potion is null)
             {
-                return NotFound($"Potion with ID of {potionId} doesn't exist!");
+                return NotFound($"Potion with Id of {potionId} doesn't exist!");
             }
 
             if (_service.IsIngredientInPotion(potion, ingredient))
             {
-                return NotFound($"{ingredient.Name} already exists in the potion of ID {potion.Id}");
+                return NotFound($"{ingredient.Name} already exists in the potion of Id {potion.Id}");
             }
             if (_service.IsPotionIngredientsFull(potion))
             {
-                return StatusCode(500, $"Potion with ID of {potion.Id} has too many ingredient.");
+                return StatusCode(500, $"Potion with Id of {potion.Id} has too many ingredient.");
             }
             await _service.AddNewIngredientToPotion(ingredient, potion);
             return Ok(potion);

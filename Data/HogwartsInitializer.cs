@@ -18,13 +18,14 @@ namespace HogwartsPotions.Data
                 var context = serviceScope.ServiceProvider.GetService<HogwartsContext>();
                 context.Database.EnsureCreated();
 
-                // Rooms
+                #region Rooms
                 Room room101 = new Room() { Capacity = 4 };
                 Room room102 = new Room() { Capacity = 4 };
                 Room room103 = new Room() { Capacity = 4 };
-                Room room104 = new Room(){ Capacity = 4};
+                Room room104 = new Room() { Capacity = 4 };
+                #endregion
 
-                // Students
+                #region Students
                 Student studentPisti = new Student()
                 {
                     Name = "Pisti",
@@ -53,7 +54,33 @@ namespace HogwartsPotions.Data
                     PetType = PetType.Rat,
                     Room = room103
                 };
+                #endregion
 
+                #region Ingredients
+                Ingredient ingredientMandrake = new Ingredient() { Name = "Mandrake" };
+                Ingredient ingredientUnicordnBlood = new Ingredient() { Name = "UnicornBlood" };
+                Ingredient ingredientUnicordnHair = new Ingredient() { Name = "UnicornHair" };
+                Ingredient ingredientBezoar = new Ingredient() { Name = "Bezoar" };
+                Ingredient ingredientDittany = new Ingredient() { Name = "Dittany" };
+                #endregion
+
+                #region Recipes
+                Recipe hpRecipe = new Recipe()
+                {
+                    Name = "HP-Recipe",
+                    Author = studentSanyi,
+                    Ingredients = new HashSet<Ingredient>()
+                    {
+                        ingredientDittany,
+                        ingredientMandrake,
+                        ingredientBezoar,
+                        ingredientUnicordnHair,
+                        ingredientUnicordnBlood
+                    }
+                };
+                #endregion
+
+                #region Context
                 if (!context.Rooms.Any())
                 {
                     context.Rooms.AddRange(new HashSet<Room>()
@@ -78,47 +105,6 @@ namespace HogwartsPotions.Data
                     context.SaveChanges();
                 }
 
-                // Ingredients
-                Ingredient ingredientMandrake = new Ingredient() { Name = "Mandrake" };
-                Ingredient ingredientUnicordnBlood = new Ingredient() { Name = "UnicordnBlood" };
-                Ingredient ingredientUnicordnHair = new Ingredient() { Name = "UnicordnHair" };
-                Ingredient ingredientBezoar = new Ingredient() { Name = "Bezoar" };
-                Ingredient ingredientDittany = new Ingredient() { Name = "Dittany" };
-
-                // Recipes
-                Recipe hpRecipe = new Recipe()
-                {
-                    Name = "HP-Recipe",
-                    Author = studentSanyi,
-                    Ingredients = new HashSet<Ingredient>()
-                    {
-                        ingredientDittany,
-                        ingredientMandrake,
-                        ingredientBezoar,
-                        ingredientUnicordnHair,
-                        ingredientUnicordnBlood
-                    }
-                };
-
-                // Potions
-                //Potion hpPotion = new Potion()
-                //{
-                //    Name = "HP-Potion",
-                //    Brewer = studentPisti,
-                //    Ingredients = new HashSet<Ingredient>()
-                //    {
-                //        ingredientMandrake,
-                //        ingredientUnicordnBlood,
-                //        ingredientUnicordnHair,
-                //        ingredientBezoar,
-                //        ingredientDittany
-                //    },
-                //    Recipe = hpRecipe,
-                //    Status = BrewingStatus.Replica
-
-
-                //};
-
                 if (!context.Ingredients.Any())
                 {
                     context.Ingredients.AddRange(new HashSet<Ingredient>()
@@ -132,17 +118,12 @@ namespace HogwartsPotions.Data
                     context.SaveChanges();
                 }
 
-                //if (!context.Potions.Any())
-                //{
-                //    context.Potions.AddRange(new List<Potion>() { hpPotion });
-                //    context.SaveChanges();
-                //}
-
                 if (!context.Recipes.Any())
                 {
                     context.Recipes.AddRange(new HashSet<Recipe>() { hpRecipe });
                     context.SaveChanges();
                 }
+                #endregion
             }
         }
     }

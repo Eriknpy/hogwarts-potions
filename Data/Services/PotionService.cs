@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HogwartsPotions.Data.Enums;
 using HogwartsPotions.Data.Interfaces;
 using HogwartsPotions.Models.Entities;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace HogwartsPotions.Data.Services
 {
@@ -23,9 +20,6 @@ namespace HogwartsPotions.Data.Services
         public async Task<List<Potion>> GetAllPotions()
         {
             return await _context.Potions
-                .Include(p => p.Brewer)
-                .Include(p => p.Ingredients)
-                .Include(p => p.Recipe)
                 .AsNoTracking()
                 .ToListAsync();
         }

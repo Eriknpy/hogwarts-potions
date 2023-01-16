@@ -17,6 +17,7 @@ namespace HogwartsPotions.Data.Services
         {
             _context = context;
         }
+
         public async Task<List<Room>> GetAllRooms()
         {
             return await _context.Rooms

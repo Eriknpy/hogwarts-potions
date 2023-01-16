@@ -12,7 +12,6 @@ namespace HogwartsPotions.Data
         {
             
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Room>().ToTable("Room");
@@ -21,7 +20,6 @@ namespace HogwartsPotions.Data
             modelBuilder.Entity<Recipe>().ToTable("Recipe");
             modelBuilder.Entity<Potion>().ToTable("Potion");
         }
-
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Recipe> Recipes { get; set; }

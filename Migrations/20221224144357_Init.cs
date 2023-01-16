@@ -94,7 +94,7 @@ namespace HogwartsPotions.Migrations
                         name: "FK_IngredientRecipe_Recipe_RecipesID",
                         column: x => x.RecipesID,
                         principalTable: "Recipe",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -116,7 +116,7 @@ namespace HogwartsPotions.Migrations
                         name: "FK_Potion_Recipe_RecipeID",
                         column: x => x.RecipeID,
                         principalTable: "Recipe",
-                        principalColumn: "ID");
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Potion_Student_BrewerId",
                         column: x => x.BrewerId,
