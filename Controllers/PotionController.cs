@@ -6,7 +6,7 @@ using HogwartsPotions.Data.Interfaces;
 
 namespace HogwartsPotions.Controllers
 {
-    [ApiController, Route("/potions")]
+    [ApiController, Route("[controller]")]
     public class PotionController : Controller
     {
         private readonly IPotionService _service;
