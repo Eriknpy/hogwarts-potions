@@ -22,6 +22,7 @@ namespace HogwartsPotions.Data.Services
         {
             return await _context.Rooms
                .Include(p => p.Residents)
+               .AsNoTracking()
                .ToListAsync();
         }
 
@@ -33,14 +34,13 @@ namespace HogwartsPotions.Data.Services
 
         public async Task<Room> GetRoomById(long id)
         {
-            return await _context.Rooms.FirstOrDefaultAsync(room => room.Id == id);
+            return await _context.Rooms.FindAsync(id);
         }
 
         public async Task UpdateRoomById(long id, Room updatedRoom)
         {
             EntityEntry entityEntry = _context.Entry(updatedRoom);
             entityEntry.State = EntityState.Modified;
-
             await _context.SaveChangesAsync();
         }
 
@@ -59,6 +59,7 @@ namespace HogwartsPotions.Data.Services
                     .Any(resident =>
                          resident.PetType == PetType.Cat ||
                          resident.PetType == PetType.Owl))
+                .AsNoTracking()
                 .ToListAsync();
         }
     }
