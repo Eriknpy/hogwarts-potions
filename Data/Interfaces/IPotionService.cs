@@ -7,8 +7,8 @@ namespace HogwartsPotions.Data.Interfaces
     public interface IPotionService
     {
         Task<List<Potion>> GetAllPotions();
-        Task<List<Potion>> GetAllPotionsOfStudent(long studentId);
-        Task<Potion> AddPotion(Potion potion);
+        Task<List<Potion>> GetAllPotionsOfStudent(Student student);
+        Task<Potion> AddPotionByStatus(Potion potion, Student brewer);
         Task<Student> GetStudent(long studentId);
         Task<Potion> AddEmptyPotion(Student student);
         Task<Potion> GetPotionById(long potionId);
@@ -21,5 +21,6 @@ namespace HogwartsPotions.Data.Interfaces
         Task<List<Recipe>> GetAllRecipesByMatchingPotionIngredients(long potionId);
         bool IsIngredientInPotion(Potion potion, Ingredient ingredient);
         bool IsPotionIngredientsFull(Potion potion);
+        Potion FormatPotionResponse(Potion potion);
     }
 }
