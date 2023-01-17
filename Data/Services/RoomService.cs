@@ -21,9 +21,9 @@ namespace HogwartsPotions.Data.Services
         public async Task<List<Room>> GetAllRooms()
         {
             return await _context.Rooms
-               .Include(p => p.Residents)
-               .AsNoTracking()
-               .ToListAsync();
+                .Include(p => p.Residents)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task AddRoom(Room room)
@@ -39,6 +39,7 @@ namespace HogwartsPotions.Data.Services
 
         public async Task UpdateRoomById(long id, Room updatedRoom)
         {
+            updatedRoom.Id = id;
             EntityEntry entityEntry = _context.Entry(updatedRoom);
             entityEntry.State = EntityState.Modified;
             await _context.SaveChangesAsync();
