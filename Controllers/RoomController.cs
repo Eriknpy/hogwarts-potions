@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using HogwartsPotions.Data.Interfaces;
 using HogwartsPotions.Models.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HogwartsPotions.Controllers
@@ -17,39 +18,71 @@ namespace HogwartsPotions.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<List<Room>> GetAllRooms()
+        public async Task<ActionResult> GetAllRooms()
         {
-            return await _service.GetAllRooms();
+            var rooms = await _service.GetAllRooms();
+            if (rooms != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, rooms);
+            }
+            return StatusCode(StatusCodes.Status404NotFound, $"No rooms found!");
         }
 
         [HttpPost("add")]
-        public async Task AddRoom([FromBody] Room room)
+        public async Task<ActionResult> AddRoom([FromBody] Room room)
         {
-            await _service.AddRoom(room);
+            var rooms = await _service.GetAllRooms();
+            if (!rooms.Any(r => r.Id == room.Id))
+            {
+                await _service.AddRoom(room);
+                return StatusCode(StatusCodes.Status201Created, room);
+            }
+            if (room.Id == 0)
+            {
+                return StatusCode(StatusCodes.Status405MethodNotAllowed);
+            }
+            return StatusCode(StatusCodes.Status406NotAcceptable, "Room already exists!");
         }
 
         [HttpGet("{id}")]
-        public async Task<Room> GetRoomById(long id)
+        public async Task<ActionResult> GetRoomById(long id)
         {
-            return await _service.GetRoomById(id);
+            var room =  await _service.GetRoomById(id);
+            if (room != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, room);
+            }
+            return StatusCode(StatusCodes.Status404NotFound, $"Room by {id} doesn't exist!");
         }
 
         [HttpPut("{id}")]
-        public void UpdateRoomById(long id, [FromBody] Room updatedRoom)
+        public async Task<ActionResult> UpdateRoomById(long id, [FromBody] Room updatedRoom)
         {
-            _service.UpdateRoomById(id,updatedRoom);
+            await _service.UpdateRoomById(id, updatedRoom);
+            return StatusCode(StatusCodes.Status200OK, updatedRoom);
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteRoomById(long id)
+        public async Task<ActionResult> DeleteRoomById(long id)
         {
-            await _service.DeleteRoomById(id);
+            var room = await _service.GetRoomById(id);
+            if (room != null)
+            {
+                await _service.DeleteRoomById(id);
+                return StatusCode(StatusCodes.Status202Accepted, $"{id}. room deleted");
+            }
+            return StatusCode(StatusCodes.Status404NotFound, $"Room by id: {id} doesn't exist!");
         }
 
         [HttpGet("rat-owners")]
-        public async Task<List<Room>> GetRoomsForRatOwners()
+        public async Task<ActionResult> GetRoomsForRatOwners()
         {
-            return await _service.GetRoomsForRatOwners();
+            var ratSafeRooms = await _service.GetRoomsForRatOwners();
+            if (ratSafeRooms != null)
+            {
+                return StatusCode(StatusCodes.Status200OK, ratSafeRooms);
+            }
+            return StatusCode(StatusCodes.Status404NotFound, "No rat safe rooms found!");
         }
     }
 }
