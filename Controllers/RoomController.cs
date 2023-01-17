@@ -18,7 +18,7 @@ namespace HogwartsPotions.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult> GetAllRooms()
+        public async Task<IActionResult> GetAllRooms()
         {
             var rooms = await _service.GetAllRooms();
             if (rooms != null)
@@ -29,7 +29,7 @@ namespace HogwartsPotions.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<ActionResult> AddRoom([FromBody] Room room)
+        public async Task<IActionResult> AddRoom([FromBody] Room room)
         {
             var rooms = await _service.GetAllRooms();
             if (!rooms.Any(r => r.Id == room.Id))
@@ -45,9 +45,9 @@ namespace HogwartsPotions.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetRoomById(long id)
+        public async Task<IActionResult> GetRoomById(long id)
         {
-            var room =  await _service.GetRoomById(id);
+            var room = await _service.GetRoomById(id);
             if (room != null)
             {
                 return StatusCode(StatusCodes.Status200OK, room);
@@ -56,14 +56,14 @@ namespace HogwartsPotions.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateRoomById(long id, [FromBody] Room updatedRoom)
+        public async Task<IActionResult> UpdateRoomById(long id, [FromBody] Room updatedRoom)
         {
             await _service.UpdateRoomById(id, updatedRoom);
             return StatusCode(StatusCodes.Status200OK, updatedRoom);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteRoomById(long id)
+        public async Task<IActionResult> DeleteRoomById(long id)
         {
             var room = await _service.GetRoomById(id);
             if (room != null)
@@ -75,7 +75,7 @@ namespace HogwartsPotions.Controllers
         }
 
         [HttpGet("rat-owners")]
-        public async Task<ActionResult> GetRoomsForRatOwners()
+        public async Task<IActionResult> GetRoomsForRatOwners()
         {
             var ratSafeRooms = await _service.GetRoomsForRatOwners();
             if (ratSafeRooms != null)

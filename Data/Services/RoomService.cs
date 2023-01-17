@@ -47,7 +47,7 @@ namespace HogwartsPotions.Data.Services
 
         public async Task DeleteRoomById(long id)
         {
-            Room room = _context.Rooms.Find(id);
+            var room = await _context.Rooms.FindAsync(id);
             _context.Rooms.Remove(room);
             await _context.SaveChangesAsync();
         }

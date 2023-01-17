@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using HogwartsPotions.Data.Enums;
 using HogwartsPotions.Models.Entities;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.CodeAnalysis.Emit;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HogwartsPotions.Data
@@ -19,10 +17,10 @@ namespace HogwartsPotions.Data
                 context.Database.EnsureCreated();
 
                 #region Rooms
-                Room room101 = new Room() { Capacity = 4 };
-                Room room102 = new Room() { Capacity = 4 };
-                Room room103 = new Room() { Capacity = 4 };
-                Room room104 = new Room() { Capacity = 4 };
+                var room101 = new Room() { Capacity = 4 };
+                var room102 = new Room() { Capacity = 4 };
+                var room103 = new Room() { Capacity = 4 };
+                var room104 = new Room() { Capacity = 4 };
                 #endregion
 
                 #region Students
@@ -57,25 +55,25 @@ namespace HogwartsPotions.Data
                 #endregion
 
                 #region Ingredients
-                Ingredient ingredientMandrake = new Ingredient() { Name = "Mandrake" };
-                Ingredient ingredientUnicordnBlood = new Ingredient() { Name = "UnicornBlood" };
-                Ingredient ingredientUnicordnHair = new Ingredient() { Name = "UnicornHair" };
-                Ingredient ingredientBezoar = new Ingredient() { Name = "Bezoar" };
-                Ingredient ingredientDittany = new Ingredient() { Name = "Dittany" };
+                var Mandrake = new Ingredient() { Name = "Mandrake" };
+                var UnicornBlood = new Ingredient() { Name = "UnicornBlood" };
+                var UnicornHair = new Ingredient() { Name = "UnicornHair" };
+                var Bezoar = new Ingredient() { Name = "Bezoar" };
+                var Dittany = new Ingredient() { Name = "Dittany" };
                 #endregion
 
                 #region Recipes
-                Recipe hpRecipe = new Recipe()
+                Recipe studentSanyiDiscovery1 = new Recipe()
                 {
-                    Name = "HP-Recipe",
+                    Name = $"{studentSanyi.Name}'s discovery #1",
                     Author = studentSanyi,
                     Ingredients = new HashSet<Ingredient>()
                     {
-                        ingredientDittany,
-                        ingredientMandrake,
-                        ingredientBezoar,
-                        ingredientUnicordnHair,
-                        ingredientUnicordnBlood
+                        Dittany,
+                        Mandrake,
+                        Bezoar,
+                        UnicornHair,
+                        UnicornBlood
                     }
                 };
                 #endregion
@@ -109,18 +107,18 @@ namespace HogwartsPotions.Data
                 {
                     context.Ingredients.AddRange(new HashSet<Ingredient>()
                     {
-                        ingredientMandrake,
-                        ingredientUnicordnBlood,
-                        ingredientUnicordnHair,
-                        ingredientBezoar,
-                        ingredientDittany
+                        Mandrake,
+                        UnicornHair,
+                        UnicornBlood,
+                        Bezoar,
+                        Dittany
                     });
                     context.SaveChanges();
                 }
 
                 if (!context.Recipes.Any())
                 {
-                    context.Recipes.AddRange(new HashSet<Recipe>() { hpRecipe });
+                    context.Recipes.AddRange(new HashSet<Recipe>() { studentSanyiDiscovery1 });
                     context.SaveChanges();
                 }
                 #endregion

@@ -13,14 +13,8 @@ namespace HogwartsPotions.Data.Interfaces
         Task<Potion> AddEmptyPotion(Student student);
         Task<Potion> GetPotionById(long potionId);
         Task<Potion> AddNewIngredientToPotion(Ingredient ingredient, Potion potion);
-        Task<List<Ingredient>> GetAllIngredients();
-        Task<Ingredient> GetIngredientByName(string name);
-        Task<Potion> ChangePotionStatus(Potion potion);
-        Task<List<Recipe>> GetAllRecipes();
-        Task AddIngredient(Ingredient ingredient);
         Task<List<Recipe>> GetAllRecipesByMatchingPotionIngredients(long potionId);
         bool IsIngredientInPotion(Potion potion, Ingredient ingredient);
         bool IsPotionIngredientsFull(Potion potion);
-        Potion FormatPotionResponse(Potion potion);
     }
 }

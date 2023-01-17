@@ -28,6 +28,22 @@ namespace HogwartsPotions.Controllers
             return StatusCode(StatusCodes.Status404NotFound, $"No potions found!");
         }
 
+        [HttpGet("{studentId:long}")]
+        public async Task<IActionResult> GetAllPotionsByStudent(long studentId)
+        {
+            Student student = await _service.GetStudent(studentId);
+            if (student != null)
+            {
+                var studentPotions = await _service.GetAllPotionsOfStudent(student);
+                if (studentPotions.Count == 0)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, $"Student of Id {studentId} doesn't have any potions yet!");
+                }
+                return StatusCode(StatusCodes.Status200OK, studentPotions);
+            }
+            return StatusCode(StatusCodes.Status404NotFound, $"Student with Id of {studentId} doesn't exist!");
+        } 
+
         [HttpPost]
         public async Task<IActionResult> AddPotion([FromBody] Potion potion)
         {
@@ -46,24 +62,9 @@ Then you can add Ingredients, please visit -> /potion/potionId/add");
             return StatusCode(StatusCodes.Status404NotFound, $"Student with Id of {potion.Brewer.Id} doesn't exist!");
         }
 
-        [HttpGet("{studentId:long}")]
-        public async Task<ActionResult> GetAllPotionsByStudent(long studentId)
-        {
-            Student student = await _service.GetStudent(studentId);
-            if (student != null)
-            {
-                var studentPotions = await _service.GetAllPotionsOfStudent(student);
-                if (studentPotions.Count == 0)
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, $"Student of Id {studentId} doesn't have any potions yet!");
-                }
-                return StatusCode(StatusCodes.Status200OK, studentPotions);
-            }
-            return StatusCode(StatusCodes.Status404NotFound,$"Student with Id of {studentId} doesn't exist!");
-        }
 
         [HttpGet("student/{studentId:long}")]
-        public async Task<ActionResult> GetStudentById(long studentId)
+        public async Task<IActionResult> GetStudentById(long studentId)
         {
             var student = await _service.GetStudent(studentId);
             if (student != null)
@@ -74,7 +75,7 @@ Then you can add Ingredients, please visit -> /potion/potionId/add");
         }
 
         [HttpPost("brew/{studentId:long}")]
-        public async Task<ActionResult> BrewPotion(long studentId)
+        public async Task<IActionResult> BrewPotion(long studentId)
         {
             Student student = await _service.GetStudent(studentId);
             if (student != null)
@@ -97,23 +98,23 @@ Then you can add Ingredients, please visit -> /potion/potionId/add");
         }
 
         [HttpPut("{potionId:long}/add")]
-        public async Task<ActionResult> AddNewIngredientToPotion(long potionId, [FromBody] Ingredient ingredient)
+        public async Task<IActionResult> AddNewIngredientToPotion(long potionId, [FromBody] Ingredient ingredient)
         {
             Potion potion = await _service.GetPotionById(potionId);
             if (potion != null)
             {
                 if (_service.IsIngredientInPotion(potion, ingredient))
                 {
-                    return StatusCode(StatusCodes.Status400BadRequest,$"{ingredient.Name} already exists in the current potion");
+                    return StatusCode(StatusCodes.Status400BadRequest, $"{ingredient.Name} already exists in the current potion");
                 }
                 if (_service.IsPotionIngredientsFull(potion))
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError,$"Potion with Id of {potion.Id} has too many ingredient.");
+                    return StatusCode(StatusCodes.Status500InternalServerError, $"Potion with Id of {potion.Id} has too many ingredient.");
                 }
                 await _service.AddNewIngredientToPotion(ingredient, potion);
                 return StatusCode(StatusCodes.Status200OK, potion);
             }
-            return StatusCode(StatusCodes.Status404NotFound,$"Potion with Id of {potionId} doesn't exist!");
+            return StatusCode(StatusCodes.Status404NotFound, $"Potion with Id of {potionId} doesn't exist!");
         }
 
         [HttpGet("{potionId}/help")]
@@ -122,9 +123,9 @@ Then you can add Ingredients, please visit -> /potion/potionId/add");
             List<Recipe> recipes = await _service.GetAllRecipesByMatchingPotionIngredients(potionId);
             if (recipes.Count == 0)
             {
-                return StatusCode(StatusCodes.Status404NotFound,"No match found!");
+                return StatusCode(StatusCodes.Status404NotFound, "No match found!");
             }
-            return StatusCode(StatusCodes.Status200OK,recipes);
+            return StatusCode(StatusCodes.Status200OK, recipes);
         }
     }
 }
