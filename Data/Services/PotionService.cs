@@ -95,7 +95,6 @@ namespace HogwartsPotions.Data.Services
             }
             await AddIngredient(newIngredient);
             potion.Ingredients.Add(newIngredient);
-            await UpdateIngredientPotion(newIngredient);
             await UpdatePotion(potion);
             if (IsPotionIngredientsFull(potion))
             {
@@ -188,13 +187,6 @@ namespace HogwartsPotions.Data.Services
         {
             EntityEntry entityEntryPotion = _context.Entry(potion);
             entityEntryPotion.State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateIngredientPotion(Ingredient ingredient)
-        {
-            EntityEntry entityEntryIngredient = _context.Entry(ingredient);
-            entityEntryIngredient.State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
