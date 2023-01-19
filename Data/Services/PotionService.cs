@@ -103,15 +103,11 @@ namespace HogwartsPotions.Data.Services
             return potion;
         }
 
-        public async Task<List<Recipe>> GetAllRecipesByMatchingPotionIngredients(long potionId)
+        public async Task<List<Recipe>> GetAllRecipesByMatchingPotionIngredients(Potion potion)
         {
-            var potion = await GetPotionById(potionId);
             return await _context.Recipes
                 .Include(r => r.Ingredients)
-                .Where(r => r.Ingredients
-                    .Any(ingredient => potion.Ingredients
-                        .Contains(ingredient)))
-                .AsNoTracking()
+                .Where(r => r.Ingredients.Any(i => potion.Ingredients.Contains(i)))
                 .ToListAsync();
         }
         #endregion
@@ -216,10 +212,24 @@ namespace HogwartsPotions.Data.Services
                 await _context.SaveChangesAsync();
                 return potion;
             }
+            var contextIngredients = _context.Ingredients.ToList();
+            var potionIngredients = potion.Ingredients.ToList();
+            var backupIngredients = new HashSet<Ingredient>();
+            foreach (var ingredient in contextIngredients)
+            {
+                foreach (var potionIngredient in potionIngredients)
+                {
+                    if (ingredient.Id == potionIngredient.Id)
+                    {
+                        backupIngredients.Add(ingredient);
+                    }
+                }
+            }
             potion.Status = BrewingStatus.Discovery;
             potion.Recipe = new Recipe()
             {
                 Name = $"{potion.Brewer.Name}'s discovery #{PotionCounter(potion)}",
+                Ingredients = backupIngredients,
                 Author = potion.Brewer
             };
             potion.Name = potion.Recipe.Name;

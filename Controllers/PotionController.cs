@@ -120,12 +120,18 @@ Then you can add Ingredients, please visit -> /potion/potionId/add");
         [HttpGet("{potionId}/help")]
         public async Task<ActionResult<List<Recipe>>> GetAllRecipesByMatchingPotionIngredients(long potionId)
         {
-            List<Recipe> recipes = await _service.GetAllRecipesByMatchingPotionIngredients(potionId);
-            if (recipes.Count == 0)
+            var potion = await _service.GetPotionById(potionId);
+            if (!_service.IsPotionIngredientsFull(potion))
             {
-                return StatusCode(StatusCodes.Status404NotFound, "No match found!");
+                var recipes = await _service.GetAllRecipesByMatchingPotionIngredients(potion);
+                if (recipes.Count == 0)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, "No match found!");
+                }
+                return StatusCode(StatusCodes.Status200OK, recipes);
             }
-            return StatusCode(StatusCodes.Status200OK, recipes);
+            return StatusCode(StatusCodes.Status400BadRequest, $"The current potion already brewed");
+            
         }
     }
 }
