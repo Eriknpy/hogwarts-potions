@@ -5,27 +5,32 @@
     ·
     <a href="https://github.com/Eriknpy/hogwarts-potions/issues">Request Feature</a></h4>
 
-## What did I learn?
-
-- Entity Framework Core
-- Code-first approach
-- SQL Server database connection
-- Asynchronous programming
-- Service Pattern
-
 ## Prerequisites
 
-- Microsoft SQL Server
+- [SQL Server Management Studio (SSMS)](https://aka.ms/ssmsfullsetup)
+- [.NET 6.0 SDK (v6.0.406) - Windows x64](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-6.0.406-windows-x64-installer)
 
 ## Installation
 
 1. Clone the repo
+```powershell
+git clone https://github.com/Eriknpy/hogwarts-potions.git
 ```
-https://github.com/Eriknpy/hogwarts-potions.git
+2. Open the .sln file and start the project in Visual Studio
+
+<h5>OR If you are a cmd person</h5>
+
+2. Navigate to the repo
+```powershell
+cd .\hogwarts-potions\
 ```
-2. Optional - Change server / database name in `appsettings.json`
+3. Build the project
+```powershell
+dotnet build
 ```
-"DefaultConnection": "[SERVER_NAME];Initial Catalog=[DB_NAME];Integrated Security=True"
+4. Run the project
+```powershell
+dotnet run
 ```
 
 ## API Reference
